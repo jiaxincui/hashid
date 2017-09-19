@@ -1,0 +1,20 @@
+{
+    "name": "jiaxincui/hashid",
+    "type": "library",
+    "description": "Laravel ID Encrypt Helper",
+    "keywords": ["laravel", "encrypt", "helper", "hashid"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jiaxin Cui",
+            "email": "jenkincei@hotmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "minimum-stability": "stable"
+}
