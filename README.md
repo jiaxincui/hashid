@@ -53,17 +53,17 @@ class User extends Model
 ```
 * 如果模型中的主键不是`id`
   
-  你需要在模型中定义一个访问器，如你的主键为`uid`，添加访问器如下：
+  你需要在模型中定义一个访问器，如你的主键为`pid`，在Model中添加访问器如下：
   
 ```php
-public function getUidAttribute($value)
+public function getPidAttribute($value)
 {
   return id_encode($value);
 }
 ```
 ### 解密
 
-通过Hashid提供的middleware对路由参数解码，在控制器中无需做任何处理即可操作数据库。
+通过Hashid提供的middleware对路由参数解码，在控制器中无需做任何操作即可解码加密后的路由参数。
 首先在`App\Http\Kernel.php`中注册中间件，在`Kernel`类的`$routeMiddleware`属性添加中间件条目。例如：
 ```php
 'hashid' => \Jiaxincui\Hashid\Http\Middleware\Hashid::class,
@@ -73,7 +73,7 @@ public function getUidAttribute($value)
 Route::resource('/users', 'UserController')->middleware('hashid');
 ```
 #### 中间件参数
-默认，`Hashid`中间件会解密路由下的所有参数，如果你想指定被解密的路由参数可在中间件传入参数，例如：
+默认情况下，`Hashid`中间件会解密当前路由的所有路由参数，如果你想指定被解密的路由参数可在中间件传入参数，例如：
 ```php
 Route::get('users/{user}/posts/{post}/comments/{comment}', function ($user, $post, $comment) {
     //
