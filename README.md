@@ -1,20 +1,21 @@
 ## 介绍
-Laravel对ID进行对称加密的辅助函数
+一个对Laravel应用模型ID进行对称加密的辅助函数。
 
-只适用于正整数加密,目前只测试12位以内正整数有效
+只适用于正整数加密，目前只测试12位以内正整数有效。
 ## 安装
 ```sh
 $ composer require jiaxincui/hashid
 ```
 ## 配置
-1. 复制`config/hashid.php`文件到Laravel项目的`config`文件夹
-2. 在.env文件添加配置项`HASH_ID_KEY=your-key`
-* 请务必手动重新生成HASH_ID_KEY,为0-9a-zA-Z共62个字符随机排序,字符不可重复,长度为16-62,可使用以下方法生成
+1. 复制`config/hashid.php`文件到Laravel项目的`config`文件夹。
+2. 在.env文件添加配置项`HASH_ID_KEY=your-key`。
+  
+* **请务必手动重新生成HASH_ID_KEY，为0-9a-zA-Z共62个字符随机排序，字符不可重复，长度为16-62，可使用以下方法生成**
 ```php
 echo str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 ```
-## 使用
-在laravel项目的任何地方均可使用`id_encode()`或`id_decode()`函数对ID进行加密或解密
+## 简单使用
+在laravel项目的任何地方均可使用`id_encode()`和`id_decode()`函数对ID进行加密或解密。
 
 ### 例子
 ```php
@@ -32,3 +33,47 @@ echo id_decode('m_Dl9'); //包含无效字符,输出:null
 echo id_decode('nlK8GhRW'); //校验错误,输出:null
 
 ```
+## Laravel深度应用
+### 加密
+
+通过Hashid提供的trait，在数据库模型中使用`use Hashid;`，对结果中的ID字段自动加密成字符串，例如：
+```php
+<?php
+namespace App;
+  
+use Illuminate\Database\Eloquent\Model;
+use Jiaxincui\Hashid\Traits\Hashid;
+ 
+class User extends Model
+{
+    use Hashid;
+
+}
+
+```
+### 解密
+
+通过Hashid提供的middleware对路由参数解码，在控制器中无需做任何处理即可操作数据库。
+首先在`App\Http\Kernel.php`中注册中间件，在`Kernel`类的`$routeMiddleware`属性添加中间件条目。例如：
+```php
+'hashid' => \Jiaxincui\Hashid\Http\Middleware\Hashid::class,
+```
+现在你可以在路由中分配中间件了。例如：
+```php
+Route::resource('/users', 'UserController')->middleware('hashid');
+```
+#### 中间件参数
+默认，`Hashid`中间件会解密路由下的所有参数，如果你想指定被解密的路由参数可在中间件传入参数，例如：
+```php
+Route::get('users/{user}/posts/{post}/comments/{comment}', function ($user, $post, $comment) {
+    //
+})->middleware('hashid:user,post');
+
+```
+以上例子中间件只解密给出的参数，如以上例子会解密路由参数`user`和`post`,不会解密`commnent`
+
+现在你的应用已经具备完整的加密和解密模型ID的功能。
+
+## License
+
+[MIT](https://github.com/jiaxincui/hashid/blob/master/LICENSE.md) © [JiaxinCui](https://github.com/jiaxincui)

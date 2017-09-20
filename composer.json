@@ -12,6 +12,9 @@
     ],
     "require": {},
     "autoload": {
+        "psr-4": {
+            "Jiaxincui\\Hashid\\": "src/"
+        },
         "files": [
             "src/helpers.php"
         ]
