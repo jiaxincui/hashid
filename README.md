@@ -34,8 +34,10 @@ echo id_decode('nlK8GhRW'); //校验错误,输出:null
 ```
 ## Laravel深度应用
 ### 加密
+有2种方法实现自动加密
+* 如果模型主键为`id`
 
-通过Hashid提供的trait，在数据库模型中使用`use Hashid;`，对结果中的ID字段自动加密成字符串，例如：
+  通过Hashid提供的trait，在数据库模型中使用`use Hashid;`，对结果中的`id`字段自动加密成字符串，例如：
 ```php
 <?php
 namespace App;
@@ -48,7 +50,16 @@ class User extends Model
     use Hashid;
 
 }
-
+```
+* 如果模型中的主键不是`id`
+  
+  你需要在模型中定义一个访问器，如你的主键为`uid`，添加访问器如下：
+  
+```php
+public function getUidAttribute($value)
+{
+  return id_encode($value);
+}
 ```
 ### 解密
 
