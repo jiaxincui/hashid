@@ -11,7 +11,7 @@ if (! function_exists('id_encode')) {
     function id_encode($int)
     {
         if (! is_numeric($int) || $int < 0 || ! is_int($int + 0)) {
-            throw new HashidException('bad parameter!');
+            throw new HashidException('Only positive integers can be accepted!');
         }
         $sign = 0;
         foreach (str_split($int) as $v) {
@@ -39,7 +39,7 @@ if (! function_exists('id_decode')) {
     function id_decode($str)
     {
         if (! preg_match('/^[0-9a-zA-Z]{2,12}$/', $str)) {
-            throw new HashidException('bad parameter!');
+            throw new HashidException('Bad parameter!');
         }
         $strArr = str_split($str);
         $key = config('hashid.key');
@@ -58,7 +58,7 @@ if (! function_exists('id_decode')) {
             $sign += $v;
         }
         if ($verfy !== $keyArr[($sign + $rand) % $keyLen]) {
-            throw new HashidException('bad parameter!');
+            throw new HashidException('Key mismatch!');
         }
         return $dec;
     }
