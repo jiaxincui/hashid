@@ -6,7 +6,7 @@ namespace Jiaxincui\Hashid\Traits;
 trait Hashid
 {
     /**
-     * ID访问器
+     * 访问器，对模型ID加密
      * @param $value
      * @return null|string
      */

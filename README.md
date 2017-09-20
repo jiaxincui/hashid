@@ -9,7 +9,6 @@ $ composer require jiaxincui/hashid
 ## 配置
 1. 复制`config/hashid.php`文件到Laravel项目的`config`文件夹。
 2. 在.env文件添加配置项`HASH_ID_KEY=your-key`。
-  
 * **请务必手动重新生成HASH_ID_KEY，为0-9a-zA-Z共62个字符随机排序，字符不可重复，长度为16-62，可使用以下方法生成**
 ```php
 echo str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
