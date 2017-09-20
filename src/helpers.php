@@ -1,4 +1,5 @@
 <?php
+use Jiaxincui\Hashid\Exceptions\HashidException;
 
 if (! function_exists('id_encode')) {
     /**
@@ -10,7 +11,7 @@ if (! function_exists('id_encode')) {
     function id_encode($int)
     {
         if (! is_numeric($int) || $int < 0 || ! is_int($int + 0)) {
-            return null;
+            throw new HashidException('bad parameter!');
         }
         $sign = 0;
         foreach (str_split($int) as $v) {
@@ -24,7 +25,7 @@ if (! function_exists('id_encode')) {
             $offset = hexdec($v) + $rand;
             $str .= $keyArr[$offset % $keyLen];
         }
-        return $str . $keyArr[$sign % $keyLen];
+        return $str . $keyArr[($sign + $rand) % $keyLen];
     }
 }
 
@@ -38,7 +39,7 @@ if (! function_exists('id_decode')) {
     function id_decode($str)
     {
         if (! preg_match('/^[0-9a-zA-Z]{2,12}$/', $str)) {
-            return null;
+            throw new HashidException('bad parameter!');
         }
         $strArr = str_split($str);
         $key = config('hashid.key');
@@ -56,8 +57,8 @@ if (! function_exists('id_decode')) {
         foreach ($decArr as $v) {
             $sign += $v;
         }
-        if ($verfy !== $keyArr[$sign % $keyLen]) {
-            return null;
+        if ($verfy !== $keyArr[($sign + $rand) % $keyLen]) {
+            throw new HashidException('bad parameter!');
         }
         return $dec;
     }
