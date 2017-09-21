@@ -1,7 +1,10 @@
 ## 介绍
 一个对Laravel应用模型ID进行对称加密的辅助函数。
+  
+依赖于[hashid/hashid](https://github.com/ivanakimov/hashids.php)
 
-只适用于正整数加密，目前只测试12位以内正整数有效。
+只适用于正整数加密
+
 ## 安装
 ```sh
 $ composer require jiaxincui/hashid
@@ -9,12 +12,13 @@ $ composer require jiaxincui/hashid
 ## 配置
 1. 复制`config/hashid.php`文件到Laravel项目的`config`文件夹。
 2. 在.env文件添加配置项`HASH_ID_KEY=your-key`。
-* **请务必手动重新生成HASH_ID_KEY，为0-9a-zA-Z共62个字符随机排序，字符不可重复，长度为16-62，可使用以下方法生成**
+* **为了加密成更安全的字符串，请手动重新生成HASH_ID_KEY，为0-9a-zA-Z共62个字符随机排序，字符不可重复，长度为16-62，可使用以下方法生成**
 ```php
 echo str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 ```
 ## 简单使用
-在laravel项目的任何地方均可使用`id_encode()`和`id_decode()`函数对ID进行加密或解密。
+包含两个辅助方法`id_encode()`和`id_decode()`。
+在Laravel项目的任何地方均可使用这两个函数对ID进行加密或解密。
 
 ### 例子
 ```php
@@ -24,12 +28,12 @@ echo id_encode(4568); //输出:N5lkv0
 echo id_decode('N5lkvO'); //输出:4568
   
 //不可对float类型数字加密，不可对负数加密，给定任何非正整数参数都会返回null
-echo id_encode(2.36); //非正整数,输出:null
-echo id_encode(-23); //非正整数,输出:null
+echo id_encode(2.36); //非正整数,抛出错误
+echo id_encode(-23); //非正整数,抛出错误
   
 //解密时任何无效字符串参数或校验错误都将返回null, 如：
-echo id_decode('m_Dl9'); //包含无效字符,输出:null
-echo id_decode('nlK8GhRW'); //校验错误,输出:null
+echo id_decode('m_Dl9'); //包含无效字符,抛出错误
+echo id_decode('nlK8GhRW'); //校验错误,抛出错误
 
 ```
 ## Laravel深度应用

@@ -5,5 +5,7 @@
  */
 
 return [
-    'key' => env('HASH_ID_KEY', 'Fi1yqx4mk3Bda7DfMCjWoOSUHYTRKhuszl2cg5pXLe6AwEGn8NvJ9VtZr0IQbP')
+    'salt' => env('APP_KEY'),
+    'min_hash_length' => 0,
+    'alphabet' => env('HASH_ID_ALPHABET', 'Fi1yqx4mk3Bda7DfMCjWoOSUHYTRKhuszl2cg5pXLe6AwEGn8NvJ9VtZr0IQbP')
 ];

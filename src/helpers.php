@@ -1,5 +1,6 @@
 <?php
 use Jiaxincui\Hashid\Exceptions\HashidException;
+use Hashids\Hashids;
 
 if (! function_exists('id_encode')) {
     /**
@@ -13,19 +14,8 @@ if (! function_exists('id_encode')) {
         if (! is_numeric($int) || $int < 0 || ! is_int($int + 0)) {
             throw new HashidException('Only positive integers can be accepted!');
         }
-        $sign = 0;
-        foreach (str_split($int) as $v) {
-            $sign += $v;
-        }
-        $keyArr = str_split(config('hashid.key'));
-        $keyLen = count($keyArr);
-        $rand = mt_rand(0, $keyLen - 1);
-        $str = $keyArr[$rand];
-        foreach (str_split(dechex($int)) as $v) {
-            $offset = hexdec($v) + $rand;
-            $str .= $keyArr[$offset % $keyLen];
-        }
-        return $str . $keyArr[($sign + $rand) % $keyLen];
+        $hashid = new Hashids(config('hashid.salt'), config('hashid.min_hash_length'), config('hashid.alphabet'));
+        return $hashid->encode($int);
     }
 }
 
@@ -38,28 +28,14 @@ if (! function_exists('id_decode')) {
      */
     function id_decode($str)
     {
-        if (! preg_match('/^[0-9a-zA-Z]{2,12}$/', $str)) {
-            throw new HashidException('Bad parameter!');
+        if (! preg_match('/^[0-9a-zA-Z]{2,18}$/', $str)) {
+            throw new HashidException('Bad parameter! Between 2-18 characters');
         }
-        $strArr = str_split($str);
-        $key = config('hashid.key');
-        $keyArr = str_split($key);
-        $keyLen = count($keyArr);
-        $hex = '';
-        $rand = strpos($key, array_shift($strArr));
-        $verfy = array_pop($strArr);
-        foreach ($strArr as $v) {
-            $hex .= strpos($key, $v) >= $rand ? dechex(strpos($key, $v) - $rand) : dechex($keyLen - $rand + strpos($key, $v));
+        $hashid = new Hashids(config('hashid.salt'), config('hashid.min_hash_length'), config('hashid.alphabet'));
+        $result = $hashid->decode($str);
+        if (count($result) !== 1) {
+            throw new HashidException('Unable to decrypt!');
         }
-        $dec = hexdec($hex);
-        $decArr = str_split($dec);
-        $sign = 0;
-        foreach ($decArr as $v) {
-            $sign += $v;
-        }
-        if ($verfy !== $keyArr[($sign + $rand) % $keyLen]) {
-            throw new HashidException('Key mismatch!');
-        }
-        return $dec;
+        return $result[0];
     }
 }
