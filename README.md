@@ -36,6 +36,10 @@ echo id_decode('m_Dl9'); //包含无效字符,抛出错误
 echo id_decode('nlK8GhRW'); //校验错误,抛出错误
 
 ```
+和[hashids/hashids](https://github.com/ivanakimov/hashids.php)不同的是`hashids`提供多个数字或包含多个数字的数组加密成一个字符串，
+解密时以数组形式返回，这在实际应用中并不常见，反而给使用带来一定麻烦，
+而此包对此进行了一些处理，不提供多个数字或多个数字数组的加密，解密时直接返回解密后的数字。
+
 ## Laravel深度应用
 ### 加密
 有2种方法实现自动加密

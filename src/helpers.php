@@ -3,11 +3,11 @@ use Jiaxincui\Hashid\Exceptions\HashidException;
 use Hashids\Hashids;
 
 if (! function_exists('id_encode')) {
+
     /**
-     * 加密正整数
-     *
      * @param $int
-     * @return string | null
+     * @return string
+     * @throws HashidException
      */
     function id_encode($int)
     {
@@ -20,11 +20,11 @@ if (! function_exists('id_encode')) {
 }
 
 if (! function_exists('id_decode')) {
+
     /**
-     * 对加密后的字符串解密
-     *
      * @param $str
-     * @return Number | null
+     * @return integer
+     * @throws HashidException
      */
     function id_decode($str)
     {
